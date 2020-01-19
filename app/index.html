@@ -1,0 +1,108 @@
+<!doctype html>
+<html ng-app="wb">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+
+	<!--  injector:base-tag -->
+	<base href="/" >
+	<!--  endinjector  -->
+
+	<!-- build:css(.) styles/vendor.css -->
+	<!-- bower:css -->
+	<!-- endbower -->
+	<!-- endbuild -->
+	
+    <!-- build:css(.tmp) styles/main.css -->
+	<!-- injector:css -->
+	<link rel="stylesheet" href="styles/main.css">
+	<!-- endinjector -->
+	<!-- endbuild -->
+
+	<!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/flux/dist/Flux.js"></script>
+    <script src="bower_components/object-path/index.js"></script>
+    <script src="bower_components/mustache.js/mustache.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/am-wb-core/dist/am-wb-core.js"></script>
+    <script src="bower_components/seen-core/dist/seen-core.js"></script>
+    <script src="bower_components/am-wb-seen-core/dist/am-wb-seen-core.js"></script>
+    <!-- endbower -->
+	<!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+	<!-- injector:js -->
+	<script src="scripts/app.js"></script>
+	<script src="scripts/controllers/main.js"></script>
+	<script src="scripts/runs/widgets.js"></script>
+	<!-- endinjector -->
+	<!-- endbuild -->
+</head>
+<body>
+<style>
+.progress-line, .progress-line:before {
+  height: 3px;
+  width: 100%;
+  margin: 0px;
+}
+.progress-line {
+  background-color: #b3d4fc;
+  display: -webkit-flex;
+  display: flex;
+}
+.progress-line:before {
+  background-color: #3f51b5;
+  content: '';
+  -webkit-animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: running-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@-webkit-keyframes running-progress {
+  0% { margin-left: 0px; margin-right: 100%; }
+  50% { margin-left: 25%; margin-right: 0%; }
+  100% { margin-left: 100%; margin-right: 0; }
+}
+@keyframes running-progress {
+  0% { margin-left: 0px; margin-right: 100%; }
+  50% { margin-left: 25%; margin-right: 0%; }
+  100% { margin-left: 100%; margin-right: 0; }
+}
+.flex-container {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin: 0px; 
+    position: absolute; 
+    top: 0; left: 0; bottom: 0; right: 0;
+    }
+</style>
+<div class="flex-container">
+    <div>
+    	<img 
+    		width="300px"
+    		height="auto"
+    		src="/api/v2/cms/contents/mb-preloading-brand/content"
+    		style="margin: 16px">
+    	<div class="progress-line"></div>
+    </div>
+</div>
+
+</body>
+</html>
