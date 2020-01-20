@@ -31,14 +31,14 @@ angular.module('wb')//
     function setModel(model){
     	loadedModel = $wbUtil.clean(model);
         $widget.compile(loadedModel, null, $element);
-    };
+    }
 
     function setDocumentPath(path){
         return $http.get(path)
         .then(function(res) {
             return setModel(res.data);
         });
-    };
+    }
     
     function pathChanged(){
     	loadPreloaderSnapShot();
@@ -49,7 +49,10 @@ angular.module('wb')//
     	return '/api/v2/cms/contents/app-amh-shop-fa/content';
     }
     
+    function createPreloaderSnapShot(){}
+    function loadPreloaderSnapShot(){}
+    
     // init controller
     createPreloaderSnapShot();
-    this.setDocumentPath(getDocumentPath());
+    setDocumentPath(getDocumentPath());
 });
