@@ -17,8 +17,12 @@
 	],
 	"license": "MIT",
 	"dependencies": {
-		"am-wb-core": "https://gitlab.com/am-wb/am-wb-core.git#4.0.x",
-		"am-wb-seen-core": "https://gitlab.com/am-wb/am-wb-seen-core.git#4.0.x"
+		"jquery": "3.4.x",
+		"lodash": "4.x",
+		"flux": "3.1.x",
+		"mustache.js": "2.3.x",
+		"angular": "1.7.x",
+		"am-wb-core": "https://gitlab.com/am-wb/am-wb-core.git#4.1.x"
 	},
 	"resolutions": {
 		"angular": "1.7.x"

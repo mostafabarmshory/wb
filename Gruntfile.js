@@ -418,11 +418,68 @@ module.exports = function(grunt) {
 			}
 		},
 
-		// Replace Google CDN references
+		/*
+		 * Replace with ViraWeb123 CDN
+		 * 
+		 * You have to change google-cdn to support this part
+		 * 
+		 * Add the following pic of code
+		 * 
+      var index = versionStr.indexOf('#');
+      if(index > 0){
+        var newVersionStr = versionStr;
+        versionStr = versionStr.substring(index+1);
+//         console.log(versionStr +'->'+newVersionStr);
+//         versionStr = newVersionStr;
+      }
+      	 * 
+      	 * function: buildReplacement
+      	 * Line:
+		 */
 		cdnify : {
+			options:{
+				cdn:{
+					jquery: {
+						versions: ['3.4.1'],
+						url: function (version) {
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/jquery@' + version + '/jquery.min.js';
+						}
+					},
+					lodash: {
+						versions: ['4.17.15'],
+						url: function (version) {
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/lodash@' + version + '/dist/lodash.min.js';
+						}
+					},
+					flux: {
+						versions: ['3.1.3'],
+						url: function (version) {
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/flux@' + version + '/dist/Flux.min.js';
+						}
+					},
+					'mustache.js': {
+						versions: ['2.3.2'],
+						url: function (version) {
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/mustache@' + version + '/mustache.min.js';
+						}
+					},
+					angular: {
+						versions: ['1.7.9'],
+						url: function (version) {
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/angular@' + version + '/angular.min.js';
+						}
+					},
+					'am-wb-core': {
+						all: true,
+						versions: ['4.1.0', '4.0.0'],
+						url: function (version) {
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/am-wb-core@' + version + '/dist/am-wb-core.min.js';
+						}
+					}
+				}
+			},
 			dist : {
-				html : [ '<%= yeoman.dist %>/*.html' ],
-//				bower: 'bower.json'
+				html : [ '<%= yeoman.dist %>/*.html' ]
 			}
 		},
 

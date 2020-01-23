@@ -29,12 +29,9 @@ module.exports = function(config) {
       'bower_components/jquery/dist/jquery.js',
       'bower_components/lodash/lodash.js',
       'bower_components/flux/dist/Flux.js',
-      'bower_components/object-path/index.js',
       'bower_components/mustache.js/mustache.js',
       'bower_components/angular/angular.js',
       'bower_components/am-wb-core/dist/am-wb-core.js',
-      'bower_components/seen-core/dist/seen-core.js',
-      'bower_components/am-wb-seen-core/dist/am-wb-seen-core.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/**/*.js',

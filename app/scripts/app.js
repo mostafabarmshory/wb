@@ -24,5 +24,13 @@
 angular.module('wb', [
 	'am-wb-core',
 	'am-wb-seen-core',
-]);
+	])
+	.config(function($locationProvider){
+		$locationProvider.html5Mode({
+			enabled: true,
+			requireBase: true,
+			rewriteLinks: true
+		})
+		.hashPrefix('!');
+	});
 
