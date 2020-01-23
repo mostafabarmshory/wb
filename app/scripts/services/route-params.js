@@ -20,13 +20,28 @@
  * SOFTWARE.
  */
 
-angular.module('wb', ['am-wb-core'])
-.config(function($locationProvider){
-	$locationProvider.html5Mode({
-		enabled: true,
-		requireBase: true,
-		rewriteLinks: true
-	})
-	.hashPrefix('!');
-});
 
+
+/**
+ * 
+ * The route parameters are a combination of $location's search() and path().
+ * The path parameters are extracted when the $route path is matched.
+ * 
+ * In case of parameter name collision, path params take precedence over search
+ * params.
+ * 
+ * The service guarantees that the identity of the $routeParams object will
+ * remain unchanged (but its properties will likely change) even when a route
+ * change occurs.
+ * 
+ * Note that the $routeParams are only updated after a route change completes
+ * successfully. This means that you cannot rely on $routeParams being correct
+ * in route resolve functions. Instead you can use $route.current.params to
+ * access the new route's parameters.
+ * 
+ * 
+ * @returns
+ */
+angular.module('wb').service('$routeParams', function() {
+
+});

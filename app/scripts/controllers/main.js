@@ -19,16 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-'use strict';
 
-angular.module('wb')//
 /**
  * 
  */
-.controller( 'MainCtrl', function(
+angular.module('wb').controller( 'MainCtrl', function(
 		/* Controller */ $scope, $element,
-		/* AngularJS  */ $http, $templateCache, $templateRequest, $q, $window,
-		/* wb-core    */ $widget, $wbUtil) {
+		/* AngularJS  */ $http, $templateCache, $templateRequest, $q, $window, $location,
+		/* wb-core    */ $widget, $wbUtil,
+		/* wb         */ $routeParams) {
 
 
 	/*
@@ -112,7 +111,7 @@ angular.module('wb')//
 	function convertUrlToContent(newUrl){
 		var url = new URL(newUrl);
 		var pathname = url.pathname;
-		
+
 		// get last part 
 		var index = pathname.lastIndexOf('/');
 		var fileName = pathname.substr(index+1);
@@ -153,7 +152,7 @@ angular.module('wb')//
 	function loadModules(modules){
 		var jobs = [];
 		var lazyJobs = [];
-		
+
 		_.forEach(modules, function(module){
 			if(loadedModel[module.url]){
 				loadedModel[module.url].candidate = false;
@@ -250,7 +249,7 @@ angular.module('wb')//
 			$element.parent().append(preLoadTemplate);
 		}, pushError);
 	}
-	
+
 
 	function removePreloaderTemplate(){
 		if(!preLoadTemplateLoaded){
@@ -271,6 +270,15 @@ angular.module('wb')//
 	 * the view. See DOC for more information about the process.
 	 ***********************************************************/
 	function documentPathChanged(newUrl, oldUrl){
+		// update $routeParams
+		_.forEach($routeParams, function(value, key) {
+			$routeParams[key] = null;
+		});
+		_.forEach($location.search(), function(value, key) {
+			$routeParams[key] = value;
+		});
+
+		// run the algorithem
 		markAllModule();
 		cleanErrors();
 		loadPreloaderTemplate();
