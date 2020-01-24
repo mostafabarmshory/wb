@@ -135,8 +135,8 @@ angular.module('wb').controller( 'MainCtrl', function(
 		_.forEach(loadedModel, function(moduel){
 			if(moduel.candidate && moduel.loaded) {
 				// XXX; remove module
-				if(module.type === 'css'){
-					$window.removeLibrary(module.url);
+				if(moduel.type === 'css'){
+					$window.removeLibrary(moduel.url);
 					moduel.loaded = false;
 				}
 			}
@@ -245,8 +245,9 @@ angular.module('wb').controller( 'MainCtrl', function(
 		.then(function(template){
 			preLoadTemplateLoaded = true;
 			preLoadTemplate = angular.element( template );
-			$element.wrap('<div></div>');
+			$element.wrap('<body></body>');
 			$element.parent().append(preLoadTemplate);
+			_.assign($element.parent()[0].style, $element[0].style);
 		}, pushError);
 	}
 

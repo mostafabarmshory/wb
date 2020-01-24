@@ -421,7 +421,7 @@ module.exports = function(grunt) {
 		/*
 		 * Replace with ViraWeb123 CDN
 		 * 
-		 * You have to change google-cdn to support this part
+		 * NOTE: You have to change google-cdn to support this part
 		 * 
 		 * Add the following pic of code
 		 * 
