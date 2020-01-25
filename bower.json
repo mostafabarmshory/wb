@@ -1,0 +1,36 @@
+{
+	"name": "wb",
+	"moduleName": "wb",
+	"title": "Weburger page",
+	"version": "3.0.5",
+	"description": "Fast weburger viewer",
+	"authors": [
+		"Mostafa Barmshory <mostafa.barmshory@dpq.co.ir>",
+		"Hadi mansouri <mohammad.hadi.mansouri@dpq.co.ir>"
+	],
+	"moduleType": [],
+	"keywords": [
+		"Material",
+		"Widget",
+		"AngularJS",
+		"Pluf"
+	],
+	"license": "MIT",
+	"dependencies": {
+		"jquery": "3.4.x",
+		"lodash": "4.x",
+		"flux": "3.1.x",
+		"mustache.js": "2.3.x",
+		"angular": "1.7.x",
+		"am-wb-core": "https://gitlab.com/am-wb/am-wb-core.git#4.1.x"
+	},
+	"resolutions": {
+		"angular": "1.7.x"
+	},
+	"devDependencies": {
+		"angular-mocks": "1.7.x"
+	},
+	"backend": {
+		"host": "elbaan.viraweb123.ir"
+	}
+}

@@ -1,0 +1,29 @@
+{
+  "ecmaVersion": 5,
+  "ide": {
+    "scriptPaths": [
+      {
+        "type": "FOLDER",
+        "path": "app"
+      },
+      {
+        "type": "FOLDER",
+        "path": "test"
+      }
+    ]
+  },
+  "libs": [
+    "browser"
+  ],
+  "plugins": {
+    "eslint": {
+      "configFile": ".eslintrc"
+    },
+    "jshint": {
+      "configFile": ".jshintrc"
+    },
+    "angular1": {
+      
+    }
+  }
+}
