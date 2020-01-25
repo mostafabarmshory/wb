@@ -448,19 +448,19 @@ module.exports = function(grunt) {
 					lodash: {
 						versions: ['4.17.15'],
 						url: function (version) {
-							return '//cdn.viraweb123.ir/api/v2/cdn/libs/lodash@' + version + '/dist/lodash.min.js';
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/lodash@' + version + '/lodash.min.js';
 						}
 					},
 					flux: {
 						versions: ['3.1.3'],
 						url: function (version) {
-							return '//cdn.viraweb123.ir/api/v2/cdn/libs/flux@' + version + '/dist/Flux.min.js';
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/flux@' + version + '/Flux.min.js';
 						}
 					},
 					'mustache.js': {
 						versions: ['2.3.2'],
 						url: function (version) {
-							return '//cdn.viraweb123.ir/api/v2/cdn/libs/mustache@' + version + '/mustache.min.js';
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/mustache.js@' + version + '/mustache.min.js';
 						}
 					},
 					angular: {

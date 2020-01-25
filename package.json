@@ -6,6 +6,7 @@
     "codacy-coverage": "^2.1.0",
     "connect-modrewrite": "^0.10.2",
     "eslint": "^4.18.2",
+    "google-cdn": "^1.1.0",
     "grunt": "^0.4.5",
     "grunt-angular-templates": "^0.5.7",
     "grunt-concurrent": "^1.0.0",
@@ -59,7 +60,6 @@
     "test": "karma start test/karma.conf.js"
   },
   "dependencies": {
-    "google-cdn": "^1.1.0",
     "grunt-bowercopy": "^1.2.4",
     "grunt-cdnify": "^1.0.2",
     "grunt-contrib-compress": "^1.4.3"
