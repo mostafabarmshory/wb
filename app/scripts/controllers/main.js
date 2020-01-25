@@ -36,6 +36,17 @@ angular.module('wb').controller( 'MainCtrl', function(
 	 * The controllers
 	 */
 	var TEMPLATE_KEY = 'view/wb-preload-template.html';
+	var DEFAULT_CONTENT_NAME = 'app-amh-shop-en';
+	
+	/*
+	 * We have to replace common unwrap function of jquery
+	 */
+	$element.unwrap = function( selector ) {
+		this.parent( selector )/*.not('body')*/.each( function() {
+			jQuery( this ).replaceWith( this.childNodes );
+		} );
+		return this;
+	};
 
 	/***********************************************************
 	 * Content Meta data
@@ -115,7 +126,7 @@ angular.module('wb').controller( 'MainCtrl', function(
 		// get last part 
 		var index = pathname.lastIndexOf('/');
 		var fileName = pathname.substr(index+1);
-		return '/api/v2/cms/contents/' + (fileName || 'app-amh-shop-fa');
+		return '/api/v2/cms/contents/' + (fileName || DEFAULT_CONTENT_NAME);
 	}
 
 	function renderContent(){
