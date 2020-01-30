@@ -60,6 +60,9 @@ angular.module('wb').controller('MainCtrl', function(
 	var content;
 	var contentMetas;
 	var contentValue;
+	
+	var template;
+	var templateAnchor;
 
 	function getContentMeta(newUrl) {
 		// XXX:
@@ -140,8 +143,29 @@ angular.module('wb').controller('MainCtrl', function(
 		delete contentMeta.term_taxonomies;
 	}
 
-	function loadTemplate(/*templateUrl*/) {
+	function loadTemplate(templatepath) {
+		if (!templatepath) {
+			template = undefined;
+			templateAnchor = undefined;
+			return;
+		}
 
+		templatepath = new URL(templatepath, window.location.href);
+		switch (templatepath.protocol) {
+			case 'http:':
+				break;
+			default:
+				$log.error('unsupported template protocule', templatepath);
+				return;
+		}
+
+		templateAnchor = templatepath.hash.substring(1);
+		templatepath.hash = '';
+		return $templateRequest(templatepath.toString())
+			.then(function(modelString) {
+				template = JSON.parse(modelString);
+				return loadModules(template.modules || []);
+			});
 	}
 
 	function setContentType(/*contentMeta*/) {
@@ -182,7 +206,10 @@ angular.module('wb').controller('MainCtrl', function(
 	}
 
 	function renderContent() {
-		contentValue = $wbUtil.clean(contentValue);
+		contentValue = $wbUtil.clean($wbUtil.replaceWidgetModelById(
+			template,
+			templateAnchor,
+			contentValue));
 		return $widget.compile(contentValue, null, $element)
 			.then(function() {
 				removePreloaderTemplate();
