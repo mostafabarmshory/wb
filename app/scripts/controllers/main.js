@@ -36,7 +36,7 @@ angular.module('wb').controller('MainCtrl', function(
 	 * The controllers
 	 */
 	var TEMPLATE_KEY = 'view/wb-preload-template.html';
-	var DEFAULT_CONTENT_NAME = 'app-amh-shop-fa';
+	var DEFAULT_CONTENT_NAME = 'app-amh-shop-en';
 
 	/*
 	 * We have to replace common unwrap function of jquery
@@ -92,7 +92,7 @@ angular.module('wb').controller('MainCtrl', function(
 					meta.key = newKey;
 				}
 			});
-		};
+		}
 
 		convertMetaIfExist('meta.description', 'description');
 		convertMetaIfExist('meta.keywords', 'keywords');
@@ -101,7 +101,7 @@ angular.module('wb').controller('MainCtrl', function(
 		_.forEach(contentMetas, function(meta) {
 			try {
 				if (meta.key === 'language' || meta.key === 'lang') {
-					$element.attr('lang', meta['language'])
+					$element.attr('lang', meta.value);
 				} else if (meta.key === 'title') {
 					// Load SEO and page
 					$document[0].title = meta.value;
