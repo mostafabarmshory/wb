@@ -23,9 +23,9 @@
 /**
  * 
  */
-angular.module('wb').controller( 'MainCtrl', function(
+angular.module('wb').controller('MainCtrl', function(
 		/* Controller */ $scope, $element,
-		/* AngularJS  */ $http, $templateCache, $templateRequest, $q, $window, $location,
+		/* AngularJS  */ $http, $templateCache, $templateRequest, $q, $window, $location, $document, $log,
 		/* wb-core    */ $widget, $wbUtil,
 		/* wb         */ $routeParams) {
 
@@ -37,14 +37,14 @@ angular.module('wb').controller( 'MainCtrl', function(
 	 */
 	var TEMPLATE_KEY = 'view/wb-preload-template.html';
 	var DEFAULT_CONTENT_NAME = 'app-amh-shop-en';
-	
+
 	/*
 	 * We have to replace common unwrap function of jquery
 	 */
-	$element.unwrap = function( selector ) {
-		this.parent( selector )/*.not('body')*/.each( function() {
-			jQuery( this ).replaceWith( this.childNodes );
-		} );
+	$element.unwrap = function(selector) {
+		this.parent(selector)/*.not('body')*/.each(function() {
+			jQuery(this).replaceWith(this.childNodes);
+		});
 		return this;
 	};
 
@@ -54,17 +54,20 @@ angular.module('wb').controller( 'MainCtrl', function(
 
 	var graphql = '{' +
 	/* content */ 'id,name,title,description,mime_type,media_type,file_name,file_size,downloads,status,creation_dtime,modif_dtime,author_id' +
-	/* metas */ ',metas{id,content_id,key,value}'+
-//	/* terms */ ',term_taxonomies{id, taxonomy, term{id, name, metas{key,value}}}' +
-	'}';
+	/* metas */ ',metas{id,content_id,key,value}' +
+		//	/* terms */ ',term_taxonomies{id, taxonomy, term{id, name, metas{key,value}}}' +
+		'}';
 	var content;
 	var contentMetas;
 	var contentValue;
+	
+	var template;
+	var templateAnchor;
 
-	function getContentMeta(newUrl){
+	function getContentMeta(newUrl) {
 		// XXX:
 		var contentPath = convertUrlToContent(newUrl);
-		if(!contentPath){
+		if (!contentPath) {
 			throw {
 				status: 404,
 				code: 404,
@@ -74,67 +77,143 @@ angular.module('wb').controller( 'MainCtrl', function(
 		return $http({
 			method: 'GET',
 			url: contentPath,
-			graphql: graphql
-		})
-		.then(function(res){
+			params: {
+				graphql: graphql
+			}
+		}).then(function(res) {
 			return res.data;
 		}, pushError);
 	}
 
-	function setContentMeta(contentMeta){
+	function setContentMeta(contentMeta) {
 		content = contentMeta;
 		contentMetas = contentMeta.metas;
+
+		function convertMetaIfExist(key, newKey) {
+			_.forEach(contentMetas, function(meta) {
+				if (meta.key === key) {
+					meta.key = newKey;
+				}
+			});
+		}
+
+		convertMetaIfExist('meta.description', 'description');
+		convertMetaIfExist('meta.keywords', 'keywords');
+
+		// Set meta datas
+		_.forEach(contentMetas, function(meta) {
+			try {
+				if (meta.key === 'language' || meta.key === 'lang') {
+					$element.attr('lang', meta.value);
+				} else if (meta.key === 'title') {
+					// Load SEO and page
+					$document[0].title = meta.value;
+				} else if (meta.key === 'link.favicon') {
+					$window.setLink('favicon', {
+						rel: 'icon',
+						href: meta.value,
+						// TODO: maso, 2020: support automatic type:'image/x-icon'
+					});
+					$window.setLink('apple-touch-icon', {
+						rel: 'apple-touch-icon',
+						href: meta.value,
+						// TODO: maso, 2020: support automatic type:'image/x-icon'
+					});
+					$window.setLink('shortcut-icon', {
+						rel: 'shortcut icon',
+						href: meta.value,
+						// TODO: maso, 2020: support automatic type:'image/x-icon'
+					});
+				} else if (meta.key === 'link.canonical') {
+					$window.setLink('canonical', {
+						rel: 'canonical',
+						href: meta.value
+					});
+				} else {
+					// TODO: maso, 2020: support full meta data
+					// $window.setMeta(name,content,http-equiv,charset)
+					$window.setMeta(meta.key, meta.value);
+				}
+			} catch (ex) {
+				$log.error(ex);
+			}
+		});
+
 		delete contentMeta.metas;
 		delete contentMeta.term_taxonomies;
 	}
 
-	function loadTemplate(/*templateUrl*/){
+	function loadTemplate(templatepath) {
+		if (!templatepath) {
+			template = undefined;
+			templateAnchor = undefined;
+			return;
+		}
 
+		templatepath = new URL(templatepath, window.location.href);
+		switch (templatepath.protocol) {
+			case 'http:':
+				break;
+			default:
+				$log.error('unsupported template protocule', templatepath);
+				return;
+		}
+
+		templateAnchor = templatepath.hash.substring(1);
+		templatepath.hash = '';
+		return $templateRequest(templatepath.toString())
+			.then(function(modelString) {
+				template = JSON.parse(modelString);
+				return loadModules(template.modules || []);
+			});
 	}
 
-	function setContentType(/*contentMeta*/){
+	function setContentType(/*contentMeta*/) {
 		// XXX:
 	}
 
-	function isWeburgerContent(){
+	function isWeburgerContent() {
 		// XXX: 
 		return true;
 	}
 
-	function loadContentValue(contentMeta){
+	function loadContentValue(contentMeta) {
 		setContentType(contentMeta);
-		if(isWeburgerContent()){
-			return $templateRequest('/api/v2/cms/contents/'+contentMeta.id+'/content')
-			.then(function(contentValueStr){
-				contentValue = JSON.parse(contentValueStr);
-				return $q.all([
-					loadModules(contentValue.modules || []),
-					loadTemplate(contentValue.template)
+		if (isWeburgerContent()) {
+			return $templateRequest('/api/v2/cms/contents/' + contentMeta.id + '/content')
+				.then(function(contentValueStr) {
+					contentValue = JSON.parse(contentValueStr);
+					return $q.all([
+						loadModules(contentValue.modules || []),
+						loadTemplate(contentValue.template)
 					])
-					.then(function(){
-						return renderContent();
-					}, pushError);
-			}, pushError);
+						.then(function() {
+							return renderContent();
+						}, pushError);
+				}, pushError);
 		}
 		// TODO: plan for other types of contents.
 	}
 
-	function convertUrlToContent(newUrl){
+	function convertUrlToContent(newUrl) {
 		var url = new URL(newUrl);
 		var pathname = url.pathname;
 
 		// get last part 
 		var index = pathname.lastIndexOf('/');
-		var fileName = pathname.substr(index+1);
+		var fileName = pathname.substr(index + 1);
 		return '/api/v2/cms/contents/' + (fileName || DEFAULT_CONTENT_NAME);
 	}
 
-	function renderContent(){
-		contentValue = $wbUtil.clean(contentValue);
+	function renderContent() {
+		contentValue = $wbUtil.clean($wbUtil.replaceWidgetModelById(
+			template,
+			templateAnchor,
+			contentValue));
 		return $widget.compile(contentValue, null, $element)
-		.then(function(){
-			removePreloaderTemplate();
-		});
+			.then(function() {
+				removePreloaderTemplate();
+			});
 	}
 
 	/***********************************************************
@@ -142,11 +221,11 @@ angular.module('wb').controller( 'MainCtrl', function(
 	 ***********************************************************/
 	var loadedModel = {};
 
-	function removeAllMarkedModules(){
-		_.forEach(loadedModel, function(moduel){
-			if(moduel.candidate && moduel.loaded) {
+	function removeAllMarkedModules() {
+		_.forEach(loadedModel, function(moduel) {
+			if (moduel.candidate && moduel.loaded) {
 				// XXX; remove module
-				if(moduel.type === 'css'){
+				if (moduel.type === 'css') {
 					$window.removeLibrary(moduel.url);
 					moduel.loaded = false;
 				}
@@ -154,43 +233,43 @@ angular.module('wb').controller( 'MainCtrl', function(
 		});
 	}
 
-	function markAllModule(){
-		_.forEach(loadedModel, function(moduel){
+	function markAllModule() {
+		_.forEach(loadedModel, function(moduel) {
 			moduel.candidate = true;
 		});
 	}
 
-	function loadModules(modules){
+	function loadModules(modules) {
 		var jobs = [];
 		var lazyJobs = [];
 
-		_.forEach(modules, function(module){
-			if(loadedModel[module.url]){
+		_.forEach(modules, function(module) {
+			if (loadedModel[module.url]) {
 				loadedModel[module.url].candidate = false;
 				return;
 			}
 			var job;
-			switch(module.type){
-			case 'js':
-				job = $window.loadLibrary(module.url);
-				break;
-			case 'css':
-				job = $window.loadStyle(module.url);
-				break;
+			switch (module.type) {
+				case 'js':
+					job = $window.loadLibrary(module.url);
+					break;
+				case 'css':
+					job = $window.loadStyle(module.url);
+					break;
 			}
-			if(job){
+			if (job) {
 				loadedModel[module.url] = module;
 				module.candidate = false;
 				module.loaded = true;
-				job.then(function(){
+				job.then(function() {
 					module.state = 'success';
-				}, function(error){
+				}, function(error) {
 					module.state = 'error';
 					pushError(error);
 				});
-				if(module.load === 'before'){
+				if (module.load === 'before') {
 					jobs.push(job);
-				}else {
+				} else {
 					lazyJobs.push(job);
 				}
 			}
@@ -204,28 +283,28 @@ angular.module('wb').controller( 'MainCtrl', function(
 	var errors = [];
 	var errorElement = null;
 
-	function cleanErrors(){
+	function cleanErrors() {
 		errors = [];
 		removeErrorTemplate();
 	}
 
-	function pushError(){
+	function pushError() {
 		// XXX:
 	}
 
-	function loadErrorTemplate(){
-		if(!errorElement){
+	function loadErrorTemplate() {
+		if (!errorElement) {
 			return;
 		}
 		errorElement.remove();
 		errorElement = null;
 	}
 
-	function removeErrorTemplate(){
+	function removeErrorTemplate() {
 		// XXX:
 	}
 
-	function isAnyError(){
+	function isAnyError() {
 		return !_.isEmpty(errors);
 	}
 
@@ -240,7 +319,7 @@ angular.module('wb').controller( 'MainCtrl', function(
 	 * 
 	 * The template will be used in page switch.
 	 */
-	function createPreloaderTemplate(){
+	function createPreloaderTemplate() {
 		var template = $element.html();
 		$templateCache.put(TEMPLATE_KEY, template);
 	}
@@ -248,27 +327,27 @@ angular.module('wb').controller( 'MainCtrl', function(
 	/*
 	 * Load preload template into the element
 	 */
-	function loadPreloaderTemplate(){
-		if(preLoadTemplateLoaded){
+	function loadPreloaderTemplate() {
+		if (preLoadTemplateLoaded) {
 			return;
 		}
 		return $templateRequest(TEMPLATE_KEY)
-		.then(function(template){
-			preLoadTemplateLoaded = true;
-			preLoadTemplate = angular.element( template );
-			$element.wrap('<body></body>');
-			$element.parent().append(preLoadTemplate);
-			_.assign($element.parent()[0].style, $element[0].style);
-		}, pushError);
+			.then(function(template) {
+				preLoadTemplateLoaded = true;
+				preLoadTemplate = angular.element(template);
+				$element.wrap('<body></body>');
+				$element.parent().append(preLoadTemplate);
+				_.assign($element.parent()[0].style, $element[0].style);
+			}, pushError);
 	}
 
 
-	function removePreloaderTemplate(){
-		if(!preLoadTemplateLoaded){
+	function removePreloaderTemplate() {
+		if (!preLoadTemplateLoaded) {
 			return;
 		}
 		preLoadTemplateLoaded = false;
-		if(preLoadTemplate){
+		if (preLoadTemplate) {
 			preLoadTemplate.remove();
 			$element.unwrap();
 		}
@@ -281,7 +360,7 @@ angular.module('wb').controller( 'MainCtrl', function(
 	 * If the page URL changed then it load new data and update
 	 * the view. See DOC for more information about the process.
 	 ***********************************************************/
-	function documentPathChanged(newUrl, oldUrl){
+	function documentPathChanged(newUrl, oldUrl) {
 		// update $routeParams
 		_.forEach($routeParams, function(value, key) {
 			$routeParams[key] = null;
@@ -296,25 +375,23 @@ angular.module('wb').controller( 'MainCtrl', function(
 		loadPreloaderTemplate();
 
 		return getContentMeta(newUrl, oldUrl)
-		.then(function(contentMeta){
-			return $q.all([
-				setContentMeta(contentMeta),
-				loadContentValue(contentMeta)
+			.then(function(contentMeta) {
+				return $q.all([
+					setContentMeta(contentMeta),
+					loadContentValue(contentMeta)
 				]);
-		}, function(error){
-			pushError(error);
-		})
-		.finally(function(){
-			removeAllMarkedModules();
-			if(isAnyError()){
-				loadErrorTemplate();
-			}
-		});
+			}, pushError)
+			.finally(function() {
+				removeAllMarkedModules();
+				if (isAnyError()) {
+					loadErrorTemplate();
+				}
+			});
 	}
 
 	// init controller
 	createPreloaderTemplate();
-	$scope.$on('$locationChangeSuccess', function(event, newUrl, oldUrl){
+	$scope.$on('$locationChangeSuccess', function(event, newUrl, oldUrl) {
 		documentPathChanged(newUrl, oldUrl);
 	});
 });
