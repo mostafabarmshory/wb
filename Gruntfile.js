@@ -1,3 +1,4 @@
+
 //Generated on 2016-11-10 using generator-angular 0.15.1
 'use strict';
 
@@ -471,9 +472,9 @@ module.exports = function(grunt) {
 					},
 					'am-wb-core': {
 						all: true,
-						versions: ['4.1.0', '4.0.0'],
+						versions: ['4.1.2', '4.1.0', '4.0.0'],
 						url: function (version) {
-							return '//cdn.viraweb123.ir/api/v2/cdn/libs/am-wb-core@' + version + '/dist/am-wb-core.min.js';
+							return '//cdn.viraweb123.ir/api/v2/cdn/libs/am-wb-core@' + version ;
 						}
 					}
 				}

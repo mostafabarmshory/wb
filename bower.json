@@ -2,7 +2,7 @@
 	"name": "wb",
 	"moduleName": "wb",
 	"title": "Weburger page",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "Fast weburger viewer",
 	"authors": [
 		"Mostafa Barmshory <mostafa.barmshory@dpq.co.ir>",
