@@ -20,8 +20,7 @@
  * SOFTWARE.
  */
 
-angular.module('wb', ['am-wb-core'])
-.config(function($locationProvider){
+angular.module('wb', ['am-wb-core']).config(function($locationProvider){
 	$locationProvider.html5Mode({
 		enabled: true,
 		requireBase: true,

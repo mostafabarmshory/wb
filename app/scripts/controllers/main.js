@@ -60,7 +60,7 @@ angular.module('wb').controller('MainCtrl', function(
 	var content;
 	var contentMetas;
 	var contentValue;
-	
+
 	var template;
 	var templateAnchor;
 
@@ -153,6 +153,7 @@ angular.module('wb').controller('MainCtrl', function(
 		templatepath = new URL(templatepath, window.location.href);
 		switch (templatepath.protocol) {
 			case 'http:':
+			case 'https:':
 				break;
 			default:
 				$log.error('unsupported template protocule', templatepath);
