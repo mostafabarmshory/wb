@@ -36,7 +36,7 @@ angular.module('wb').controller('MainCtrl', function(
 	 * The controllers
 	 */
 	var TEMPLATE_KEY = 'view/wb-preload-template.html';
-	var DEFAULT_CONTENT_NAME = 'main';
+	var DEFAULT_CONTENT_NAME = 'home';
 
 	/*
 	 * We have to replace common unwrap function of jquery
