@@ -22,7 +22,7 @@
 		"flux": "3.1.x",
 		"mustache.js": "2.3.x",
 		"angular": "1.7.x",
-		"am-wb-core": "https://gitlab.com/am-wb/am-wb-core.git#4.1.x"
+		"am-wb-core": "https://github.com/viraweb123/am-wb-core.git#4.1.x"
 	},
 	"resolutions": {
 		"angular": "1.7.x"
