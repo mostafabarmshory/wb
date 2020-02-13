@@ -31,6 +31,6 @@
 		"angular-mocks": "1.7.x"
 	},
 	"backend": {
-		"host": "test.viraweb123.ir"
+		"host": "7tooti.viraweb123.ir"
 	}
 }
