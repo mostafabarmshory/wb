@@ -472,7 +472,7 @@ module.exports = function(grunt) {
 					},
 					'am-wb-core': {
 						all: true,
-						versions: ['4.1.4'],
+						versions: ['4.1.5'],
 						url: function (version) {
 							return '//cdn.viraweb123.ir/api/v2/cdn/libs/am-wb-core@' + version ;
 						}
