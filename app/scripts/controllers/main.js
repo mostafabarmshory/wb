@@ -59,7 +59,8 @@ angular.module('wb').controller('MainCtrl', function(
 		'}';
 	var content;
 	var contentMetas;
-	var contentValue;
+	var contentMetasMap;
+	//	var contentValue;
 
 	var template;
 	var templateAnchor;
@@ -88,6 +89,7 @@ angular.module('wb').controller('MainCtrl', function(
 	function setContentMeta(contentMeta) {
 		content = contentMeta;
 		contentMetas = contentMeta.metas;
+		contentMetasMap = {};
 
 		function convertMetaIfExist(key, newKey) {
 			_.forEach(contentMetas, function(meta) {
@@ -102,6 +104,7 @@ angular.module('wb').controller('MainCtrl', function(
 
 		// Set meta datas
 		_.forEach(contentMetas, function(meta) {
+			contentMetasMap[meta.key] = meta.value;
 			try {
 				if (meta.key === 'language' || meta.key === 'lang') {
 					$element.attr('lang', meta.value);
@@ -169,27 +172,39 @@ angular.module('wb').controller('MainCtrl', function(
 			});
 	}
 
-	function setContentType(/*contentMeta*/) {
-		// XXX:
+	function isWeburgerContent() {
+		return content.mime_type.startsWith('application/weburger+json');
 	}
 
-	function isWeburgerContent() {
-		// XXX: 
-		return true;
+	function isHtml() {
+		return content.mime_type.startsWith('text/html');
 	}
 
 	function loadContentValue(contentMeta) {
-		setContentType(contentMeta);
 		if (isWeburgerContent()) {
 			return $templateRequest('/api/v2/cms/contents/' + contentMeta.id + '/content')
 				.then(function(contentValueStr) {
-					contentValue = JSON.parse(contentValueStr);
-					return $q.all([
-						loadModules(contentValue.modules || []),
-						loadTemplate(contentValue.template)
-					])
+					var contentValue = JSON.parse(contentValueStr);
+					return $q
+						.all([
+							loadModules(contentValue.modules || []),
+							loadTemplate(contentValue.template || contentMetasMap.template)
+						])
 						.then(function() {
-							return renderContent();
+							return renderContent(contentValue);
+						}, pushError);
+				}, pushError);
+		}
+		if (isHtml()) {
+			return $templateRequest('/api/v2/cms/contents/' + contentMeta.id + '/content')
+				.then(function(contentValueStr) {
+					return $q
+						.all([
+							loadModules([]),
+							loadTemplate(contentMetasMap.template)
+						])
+						.then(function() {
+							return renderHtmlContent(contentValueStr);
 						}, pushError);
 				}, pushError);
 		}
@@ -206,15 +221,22 @@ angular.module('wb').controller('MainCtrl', function(
 		return '/api/v2/cms/contents/' + (fileName || DEFAULT_CONTENT_NAME);
 	}
 
-	function renderContent() {
-		contentValue = $wbUtil.clean($wbUtil.replaceWidgetModelById(
+	function renderContent(content) {
+		content = $wbUtil.clean($wbUtil.replaceWidgetModelById(
 			template,
 			templateAnchor,
-			contentValue));
-		return $widget.compile(contentValue, null, $element)
+			content));
+		return $widget.compile(content, null, $element)
 			.then(function() {
 				removePreloaderTemplate();
 			});
+	}
+
+	function renderHtmlContent(htmlText) {
+		return renderContent({
+			type: 'div',
+			html: htmlText
+		});
 	}
 
 	/***********************************************************
