@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 	require('jit-grunt')(grunt, {
 		useminPrepare : 'grunt-usemin',
 		ngtemplates : 'grunt-angular-templates',
-		cdnify : 'grunt-google-cdn',
+		cdnify : 'grunt-google-cdn2',
 		compress : 'grunt-contrib-compress',
 		configureProxies : 'grunt-connect-proxy',
 		uglify: 'grunt-contrib-uglify-es'
@@ -441,7 +441,7 @@ module.exports = function(grunt) {
 			options:{
 				cdn:{
 					jquery: {
-						versions: ['3.4.1'],
+						versions: ['3.4.1', '3.5.1'],
 						url: function (version) {
 							return '//cdn.viraweb123.ir/api/v2/cdn/libs/jquery@' + version + '/jquery.min.js';
 						}
@@ -472,7 +472,7 @@ module.exports = function(grunt) {
 					},
 					'am-wb-core': {
 						all: true,
-						versions: ['4.1.5'],
+						versions: ['https://github.com/viraweb123/am-wb-core.git#4.1.x'],
 						url: function (version) {
 							return '//cdn.viraweb123.ir/api/v2/cdn/libs/am-wb-core@' + version ;
 						}
