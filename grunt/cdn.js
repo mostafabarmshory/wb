@@ -3,9 +3,9 @@
 var bowerJson = require('./../bower.json');
 var cdnDb = {
 	jquery: {
-		versions: ['3.4.1', '3.5.1'],
+		versions: ['3.5.1'],
 		url: function(version) {
-			return '//cdn.viraweb123.ir/api/v2/cdn/libs/jquery@' + version + '/jquery.min.js';
+			return '//cdn.viraweb123.ir/api/v2/cdn/libs/jquery@' + version + '/dist/jquery.min.js';
 		}
 	},
 	lodash: {
